@@ -11,9 +11,17 @@
 // usando multer com diskStorage. Não utilize provedores externos.
 
 const express = require('express');
+const multer = require('multer');
+const DocumentRepository = require('./repositories/documentRepository');
+const { DocumentService } = require('./services/documentService');
+const createDocumentController = require('./controllers/documentController');
+const createDocumentRouter = require('./routes/documentRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const documentRepository = new DocumentRepository();
+const documentService = new DocumentService(documentRepository);
+const documentController = createDocumentController(documentService);
 
 app.use(express.json());
 
@@ -21,6 +29,25 @@ app.use(express.json());
 // /documents/:id/download) serão implementadas durante o Passo 2.
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+app.use(createDocumentRouter(documentController));
+
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'O arquivo excede o limite de 10 MiB.' });
+  }
+
+  if (error.code === 'UNSUPPORTED_MEDIA_TYPE') {
+    return res.status(415).json({ error: error.message });
+  }
+
+  if (error instanceof multer.MulterError) {
+    return res.status(400).json({ error: 'Upload inválido.' });
+  }
+
+  console.error(error);
+  return res.status(500).json({ error: 'Ocorreu um erro interno.' });
 });
 
 if (require.main === module) {
