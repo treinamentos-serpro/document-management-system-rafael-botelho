@@ -11,7 +11,7 @@ const repository = require('../repositories/documentRepository');
 function buildMetadata(file, owner) {
   return {
     id: randomUUID(),
-    originalName: file.originalname,
+    originalName: path.basename(file.originalname),
     storedName: file.filename,
     size: file.size,
     owner: owner || 'anonymous',

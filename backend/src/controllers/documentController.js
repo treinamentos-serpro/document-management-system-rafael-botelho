@@ -3,6 +3,7 @@
 // Controller de documentos: trata entrada HTTP e delega para o serviço.
 // Responsabilidade única: validação HTTP e formatação da resposta.
 
+const path = require('path');
 const service = require('../services/documentService');
 
 function upload(req, res) {
@@ -24,7 +25,8 @@ function download(req, res) {
   if (!result) {
     return res.status(404).json({ error: 'Documento não encontrado.' });
   }
-  return res.download(result.filePath, result.originalName);
+  const safeName = path.basename(result.originalName);
+  return res.download(result.filePath, safeName);
 }
 
 module.exports = { upload, list, download };

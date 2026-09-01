@@ -12,7 +12,8 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: path.resolve(__dirname, '../../storage'),
   filename: (req, file, cb) => {
-    const unique = `${Date.now()}-${file.originalname}`;
+    const safeName = path.basename(file.originalname);
+    const unique = `${Date.now()}-${safeName}`;
     cb(null, unique);
   },
 });
