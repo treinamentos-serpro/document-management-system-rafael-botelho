@@ -54,24 +54,25 @@ export default function UploadComponent({ userId, onUploadSuccess }) {
   }
 
   return (
-    <section className="panel upload-panel" aria-labelledby="upload-title">
+    <section className="border border-[#b8cec8] bg-white/90 p-5 shadow-[5px_5px_0_#d3e3dd] sm:p-6" aria-labelledby="upload-title">
       <div>
-        <p className="eyebrow">Novo documento</p>
-        <h2 id="upload-title">Enviar arquivo</h2>
+        <p className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#b44729]">Novo documento</p>
+        <h2 id="upload-title" className="font-display text-2xl font-normal text-[#18364d]">Enviar arquivo</h2>
       </div>
-      <form className="upload-form" onSubmit={handleSubmit}>
-        <label className="file-input" htmlFor="document-file">
+      <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
+        <label className="grid gap-2 text-sm font-bold text-[#36596a]" htmlFor="document-file">
           <span>Selecione um PDF, PNG ou JPEG</span>
           <input
             id="document-file"
+            className="w-full cursor-pointer rounded border border-dashed border-[#99b5ad] bg-[#f6faf8] p-2 text-sm font-normal file:mr-3 file:rounded file:border-0 file:bg-[#d8e9e3] file:px-3 file:py-1.5 file:font-sans file:font-bold file:text-[#205a60] hover:file:bg-[#c9ded6]"
             type="file"
             accept="application/pdf,image/png,image/jpeg"
             onChange={handleFileChange}
           />
-          <strong>{file ? file.name : 'Nenhum arquivo selecionado'}</strong>
+          <strong className="overflow-wrap-anywhere text-sm text-[#18364d]">{file ? file.name : 'Nenhum arquivo selecionado'}</strong>
         </label>
-        {error && <p className="message error" role="alert">{error}</p>}
-        <button type="submit" disabled={isUploading}>
+        {error && <p className="text-sm font-semibold text-[#a32d1d]" role="alert">{error}</p>}
+        <button className="rounded bg-[#b44729] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#92321d] focus:outline-none focus:ring-2 focus:ring-[#b44729] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-65" type="submit" disabled={isUploading}>
           {isUploading ? 'Enviando...' : 'Enviar documento'}
         </button>
       </form>

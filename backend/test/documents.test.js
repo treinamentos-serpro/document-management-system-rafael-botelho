@@ -65,3 +65,38 @@ test('envia, lista e baixa documentos do proprietário', async () => {
   assert.strictEqual(downloadResponse.headers.get('content-type'), 'application/pdf');
   assert.strictEqual(await downloadResponse.text(), 'conteúdo do documento');
 });
+
+test('exclui o documento e impede o acesso de outro proprietário', async () => {
+  const formData = new FormData();
+  formData.append(
+    'file',
+    new Blob(['conteúdo para excluir'], { type: 'application/pdf' }),
+    'excluir.pdf',
+  );
+
+  const uploadResponse = await fetch(`${baseUrl}/upload`, {
+    method: 'POST',
+    headers: { 'X-User-Id': 'usuario-exclusao' },
+    body: formData,
+  });
+  const document = await uploadResponse.json();
+  const storageFileCount = fs.readdirSync(storageDirectory).length;
+
+  const forbiddenDeleteResponse = await fetch(`${baseUrl}/documents/${document.id}`, {
+    method: 'DELETE',
+    headers: { 'X-User-Id': 'outro-usuario' },
+  });
+  assert.strictEqual(forbiddenDeleteResponse.status, 404);
+
+  const deleteResponse = await fetch(`${baseUrl}/documents/${document.id}`, {
+    method: 'DELETE',
+    headers: { 'X-User-Id': 'usuario-exclusao' },
+  });
+  assert.strictEqual(deleteResponse.status, 204);
+  assert.strictEqual(fs.readdirSync(storageDirectory).length, storageFileCount - 1);
+
+  const listResponse = await fetch(`${baseUrl}/documents`, {
+    headers: { 'X-User-Id': 'usuario-exclusao' },
+  });
+  assert.deepStrictEqual(await listResponse.json(), []);
+});

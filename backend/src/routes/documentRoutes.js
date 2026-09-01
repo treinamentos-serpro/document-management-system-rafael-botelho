@@ -43,6 +43,7 @@ function createDocumentRouter(documentController) {
   router.post('/upload', upload.single('file'), documentController.upload);
   router.get('/documents', documentController.list);
   router.get('/documents/:id/download', documentController.download);
+  router.delete('/documents/:id', documentController.remove);
 
   return router;
 }

@@ -19,6 +19,10 @@ class DocumentRepository {
         secondDocument.uploadedAt.localeCompare(firstDocument.uploadedAt)
       ));
   }
+
+  delete(id) {
+    return this.documents.delete(id);
+  }
 }
 
 module.exports = DocumentRepository;

@@ -48,3 +48,10 @@ export async function downloadDocument(documentId, userId) {
 
   return response.blob();
 }
+
+export async function deleteDocument(documentId, userId) {
+  await request(`/documents/${documentId}`, {
+    method: 'DELETE',
+    headers: createUserHeaders(userId),
+  });
+}

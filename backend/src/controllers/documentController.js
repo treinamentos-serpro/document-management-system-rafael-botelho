@@ -70,6 +70,25 @@ function createDocumentController(documentService) {
         return next(error);
       }
     },
+
+    async remove(req, res, next) {
+      const owner = getOwner(req);
+
+      if (!owner) {
+        return respondInvalidOwner(res);
+      }
+
+      try {
+        await documentService.deleteDocument(req.params.id, owner);
+        return res.status(204).send();
+      } catch (error) {
+        if (error instanceof DocumentNotFoundError) {
+          return res.status(404).json({ error: error.message });
+        }
+
+        return next(error);
+      }
+    },
   };
 }
 

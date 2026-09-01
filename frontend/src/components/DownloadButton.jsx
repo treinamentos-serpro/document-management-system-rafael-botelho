@@ -27,7 +27,7 @@ export default function DownloadButton({ documentId, originalName, userId, onErr
 
   return (
     <button
-      className="download-button"
+      className="rounded border border-[#206066] px-3 py-1.5 text-sm font-bold text-[#206066] transition hover:bg-[#206066] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#206066] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-65"
       type="button"
       onClick={handleDownload}
       disabled={isDownloading}

@@ -1,4 +1,5 @@
 const { randomUUID } = require('node:crypto');
+const fs = require('node:fs/promises');
 
 class DocumentNotFoundError extends Error {}
 
@@ -36,6 +37,22 @@ class DocumentService {
     }
 
     return document;
+  }
+
+  async deleteDocument(id, owner) {
+    const document = this.getDocumentForDownload(id, owner);
+
+    try {
+      await fs.unlink(document.storagePath);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        throw new DocumentNotFoundError('Documento não encontrado.');
+      }
+
+      throw error;
+    }
+
+    this.documentRepository.delete(id);
   }
 
   toPublicMetadata(document) {
